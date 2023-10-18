@@ -4,37 +4,24 @@ import 'dotenv/config'
 
 describe('Authentication', () => {
   describe('Authentication with valid credentials', () => {
-    it('Validate status code', async () => {
-      let res
+    let res
+    before(async () => {
       res = await request(process.env.BASE_URL)
         .post('/user/login')
         .send({ email: process.env.EMAIL, password: process.env.PASSWORD })
-
-      expect(res.statusCode).to.eq(200)
     })
-    it('Validate response message', async () => {
-      let res
-      res = await request(process.env.BASE_URL)
-        .post('/user/login')
-        .send({ email: process.env.EMAIL, password: process.env.PASSWORD })
 
+    it('Validate status code', async () => {
+      await expect(res.statusCode).to.eq(200)
+    })
+    it('Validate response message', () => {
       expect(res.body.message).to.eq('Auth success')
     })
-    it('Check the property token exist', async () => {
-      let res
-      res = await request(process.env.BASE_URL)
-        .post('/user/login')
-        .send({ email: process.env.EMAIL, password: process.env.PASSWORD })
-
+    it('Check the property token exist', () => {
       expect(res.body.payload).to.haveOwnProperty('token')
     })
     it('Check the token is string', async () => {
-      let res
-      res = await request(process.env.BASE_URL)
-        .post('/user/login')
-        .send({ email: process.env.EMAIL, password: process.env.PASSWORD })
-
-      expect(res.body.payload.token).to.be.a('string')
+      await expect(res.body.payload.token).to.be.a('string')
     })
   })
 })
